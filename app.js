@@ -143,7 +143,7 @@ const FALLBACK_DATA = {
       "question": "In a BST, if nodes p and q both have values smaller than the root value, where does their Lowest Common Ancestor lie?",
       "options": ["In the right subtree", "In the left subtree", "It is the root node itself", "Cannot be determined"],
       "correctIndex": 1,
-      "explanation": "Since both values are smaller than root, LCA must reside in the left subtree."
+      explanation: "Since both values are smaller than root, LCA must reside in the left subtree."
     },
     {
       "id": "tech-5",
@@ -154,7 +154,7 @@ const FALLBACK_DATA = {
       "question": "What is the time complexity of the classic 0/1 Knapsack dynamic programming solution with N items and maximum capacity W?",
       "options": ["O(N × W)", "O(2^N)", "O(N²)", "O(W²)"],
       "correctIndex": 0,
-      "explanation": "The DP table has (N+1) × (W+1) states, making the time complexity O(N × W)."
+      explanation: "The DP table has (N+1) × (W+1) states, making the time complexity O(N × W)."
     },
     {
       "id": "tech-6",
@@ -165,7 +165,7 @@ const FALLBACK_DATA = {
       "question": "Which network protocol is connection-oriented, guarantees ordered packet delivery, and provides error checking via acknowledgment?",
       "options": ["UDP", "TCP", "ICMP", "IP"],
       "correctIndex": 1,
-      "explanation": "TCP is connection-oriented with 3-way handshake, packet sequencing, and acknowledgments."
+      explanation: "TCP is connection-oriented with 3-way handshake, packet sequencing, and acknowledgments."
     }
   ],
   dsaRoadmap: [
@@ -215,13 +215,17 @@ const AppState = {
   userProgress: JSON.parse(localStorage.getItem('prep_progress') || '[]'),
   userBookmarks: JSON.parse(localStorage.getItem('prep_bookmarks') || '[]'),
   userNotes: JSON.parse(localStorage.getItem('prep_notes') || '{}'),
-  resumeState: JSON.parse(localStorage.getItem('prep_resume') || '{}')
+  resumeState: JSON.parse(localStorage.getItem('prep_resume') || '{}'),
+  currentUser: JSON.parse(localStorage.getItem('prep_user') || 'null')
 };
 
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
   loadData();
   setupEventListeners();
+  setupAuthEventListeners();
+  checkMandatoryAuthGate();
+  renderHeaderAuthStatus();
   renderCurrentView();
   updateReadinessGauge();
 });
@@ -241,12 +245,35 @@ async function loadData() {
   }
 }
 
+// Setup Mandatory Authentication Gate
+function checkMandatoryAuthGate() {
+  const authModal = document.getElementById('authModal');
+  const closeAuthBtn = document.getElementById('closeAuthBtn');
+  
+  if (!AppState.currentUser) {
+    // User is NOT logged in: Lock the portal with mandatory Login/Signup screen
+    if (authModal) authModal.classList.add('active', 'mandatory-gate');
+    if (closeAuthBtn) closeAuthBtn.style.display = 'none';
+  } else {
+    // User IS logged in: Unlock portal
+    if (authModal) authModal.classList.remove('active', 'mandatory-gate');
+    if (closeAuthBtn) closeAuthBtn.style.display = 'block';
+  }
+}
+
 // Setup Event Listeners
 function setupEventListeners() {
   // Navigation menu links (Sidebar & Mobile Bottom Bar)
   document.querySelectorAll('[data-view]').forEach(item => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
+
+      // Block navigation if user is not authenticated
+      if (!AppState.currentUser) {
+        checkMandatoryAuthGate();
+        return;
+      }
+
       const view = item.getAttribute('data-view');
       navigateToView(view);
       closeMobileSidebar();
@@ -260,6 +287,10 @@ function setupEventListeners() {
 
   if (mobileBtn) {
     mobileBtn.addEventListener('click', () => {
+      if (!AppState.currentUser) {
+        checkMandatoryAuthGate();
+        return;
+      }
       sidebar.classList.toggle('mobile-open');
       overlay.classList.toggle('active');
     });
@@ -273,6 +304,10 @@ function setupEventListeners() {
   const searchInput = document.getElementById('globalSearchInput');
   if (searchInput) {
     searchInput.addEventListener('input', (e) => {
+      if (!AppState.currentUser) {
+        checkMandatoryAuthGate();
+        return;
+      }
       AppState.searchQuery = e.target.value.toLowerCase();
       if (AppState.currentView !== 'practice') {
         navigateToView('practice');
@@ -280,6 +315,136 @@ function setupEventListeners() {
         renderPracticeView();
       }
     });
+  }
+}
+
+// Setup Login & Sign Up Modal Event Listeners
+function setupAuthEventListeners() {
+  const authModal = document.getElementById('authModal');
+  const openAuthBtn = document.getElementById('openAuthBtn');
+  const closeAuthBtn = document.getElementById('closeAuthBtn');
+  const tabLoginBtn = document.getElementById('tabLoginBtn');
+  const tabSignupBtn = document.getElementById('tabSignupBtn');
+  const loginForm = document.getElementById('loginForm');
+  const signupForm = document.getElementById('signupForm');
+
+  if (openAuthBtn) {
+    openAuthBtn.addEventListener('click', () => {
+      if (authModal) authModal.classList.add('active');
+    });
+  }
+
+  if (closeAuthBtn) {
+    closeAuthBtn.addEventListener('click', () => {
+      if (AppState.currentUser && authModal) {
+        authModal.classList.remove('active');
+      }
+    });
+  }
+
+  // Close modal when clicking backdrop (Only allowed if logged in!)
+  if (authModal) {
+    authModal.addEventListener('click', (e) => {
+      if (e.target === authModal && AppState.currentUser) {
+        authModal.classList.remove('active');
+      }
+    });
+  }
+
+  // Tab Switching
+  if (tabLoginBtn && tabSignupBtn) {
+    tabLoginBtn.addEventListener('click', () => {
+      tabLoginBtn.classList.add('active');
+      tabSignupBtn.classList.remove('active');
+      loginForm.classList.add('active');
+      signupForm.classList.remove('active');
+    });
+
+    tabSignupBtn.addEventListener('click', () => {
+      tabSignupBtn.classList.add('active');
+      tabLoginBtn.classList.remove('active');
+      signupForm.classList.add('active');
+      loginForm.classList.remove('active');
+    });
+  }
+
+  // Handle Login Submit
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const name = email.split('@')[0];
+      const initials = name.substring(0, 2).toUpperCase();
+
+      AppState.currentUser = {
+        name: name.charAt(0).toUpperCase() + name.slice(1),
+        email: email,
+        initials: initials,
+        dept: 'Computer Science'
+      };
+
+      localStorage.setItem('prep_user', JSON.stringify(AppState.currentUser));
+      checkMandatoryAuthGate();
+      renderHeaderAuthStatus();
+      renderCurrentView();
+    });
+  }
+
+  // Handle Signup Submit
+  if (signupForm) {
+    signupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('signupName').value;
+      const email = document.getElementById('signupEmail').value;
+      const dept = document.getElementById('signupDept').value;
+      const initials = name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+
+      AppState.currentUser = {
+        name: name,
+        email: email,
+        dept: dept,
+        initials: initials
+      };
+
+      localStorage.setItem('prep_user', JSON.stringify(AppState.currentUser));
+      checkMandatoryAuthGate();
+      renderHeaderAuthStatus();
+      renderCurrentView();
+    });
+  }
+}
+
+// Render User Profile Badge or Sign In button in Header
+function renderHeaderAuthStatus() {
+  const container = document.getElementById('authHeaderContainer');
+  if (!container) return;
+
+  if (AppState.currentUser) {
+    container.innerHTML = `
+      <div class="user-profile-badge" title="${AppState.currentUser.name} (${AppState.currentUser.dept})" onclick="handleLogout()">
+        <div class="avatar-circle">${AppState.currentUser.initials}</div>
+        <span class="user-name-text">${AppState.currentUser.name}</span>
+      </div>
+    `;
+  } else {
+    container.innerHTML = `
+      <button class="btn-auth-trigger" id="openAuthBtn">Sign In</button>
+    `;
+    const btn = document.getElementById('openAuthBtn');
+    const authModal = document.getElementById('authModal');
+    if (btn && authModal) {
+      btn.addEventListener('click', () => authModal.classList.add('active'));
+    }
+  }
+}
+
+function handleLogout() {
+  if (confirm(`Logged in as ${AppState.currentUser.name}. Do you want to sign out?`)) {
+    AppState.currentUser = null;
+    localStorage.removeItem('prep_user');
+    checkMandatoryAuthGate();
+    renderHeaderAuthStatus();
+    renderCurrentView();
   }
 }
 
@@ -292,6 +457,11 @@ function closeMobileSidebar() {
 
 // View Router
 function navigateToView(viewName) {
+  if (!AppState.currentUser) {
+    checkMandatoryAuthGate();
+    return;
+  }
+
   AppState.currentView = viewName;
   
   // Update active states in navigation
@@ -368,9 +538,15 @@ function renderDashboardHTML() {
   const bookmarkedCount = AppState.userBookmarks.length;
   const companies = AppState.data.companies.slice(0, 3);
   const featuredQs = AppState.data.questions.slice(0, 2);
+  const userName = AppState.currentUser ? AppState.currentUser.name : 'Student';
 
   return `
     <div class="animate-fade-in">
+      <div style="margin-bottom: 20px;">
+        <h2 style="font-size: 1.3rem; font-weight: 800; color: var(--text-main);">Welcome back, ${userName}! 👋</h2>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Track your daily placement goals, target companies, and aptitude practice.</p>
+      </div>
+
       <!-- Stats Overview -->
       <div class="stats-banner">
         <div class="stat-card">

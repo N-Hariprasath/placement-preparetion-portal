@@ -11,6 +11,7 @@
           "-webkit-overflow-scrolling"
         ]
       }
-    ]
+    ],
+    "no-inline-styles": "off"
   }
 }
