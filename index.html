@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PrepPulse - Placement Preparation Portal</title>
+  <meta name="description" content="Comprehensive placement preparation portal with company tracks, aptitude practice, DSA roadmap, and HR interview guides.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div id="app-container">
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand-header">
+        <div class="brand-logo-icon">🚀</div>
+        <div class="brand-text">
+          <h1>PrepPulse</h1>
+          <p>Placement Portal</p>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-view="dashboard" id="nav-dashboard">
+          <span class="nav-item-icon">📊</span>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-view="companies" id="nav-companies">
+          <span class="nav-item-icon">🏢</span>
+          <span>Company Tracks</span>
+        </button>
+        <button class="nav-item" data-view="practice" id="nav-practice">
+          <span class="nav-item-icon">⚡</span>
+          <span>Practice & Quizzes</span>
+        </button>
+        <button class="nav-item" data-view="roadmap" id="nav-roadmap">
+          <span class="nav-item-icon">🗺️</span>
+          <span>DSA Roadmap</span>
+        </button>
+        <button class="nav-item" data-view="hr" id="nav-hr">
+          <span class="nav-item-icon">💬</span>
+          <span>HR & Resume Guide</span>
+        </button>
+        <button class="nav-item" data-view="bookmarks" id="nav-bookmarks">
+          <span class="nav-item-icon">⭐</span>
+          <span>Saved Bookmarks</span>
+        </button>
+      </nav>
+
+    </aside>
+
+    <!-- Main Application Area -->
+    <div class="main-wrapper">
+      <!-- Top Navigation Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-trigger" id="mobileMenuBtn" aria-label="Toggle Menu">☰</button>
+          <h2 class="page-title" id="pageTitle">Placement Prep Dashboard</h2>
+        </div>
+
+        <div class="header-right">
+          <div class="search-input-group">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="globalSearchInput" placeholder="Search topic, company, Qs...">
+          </div>
+          
+          <div class="user-streak-badge">
+            <span>🔥 5 Day Streak</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dynamic Page Body -->
+      <main class="content-body" id="contentContainer">
+        <!-- Injected dynamically by app.js -->
+      </main>
+
+      <!-- Mobile Bottom Navigation Bar -->
+      <nav class="mobile-bottom-nav" id="mobileBottomNav">
+        <button class="bottom-nav-item active" data-view="dashboard">
+          <span class="bottom-nav-icon">📊</span>
+          <span>Home</span>
+        </button>
+        <button class="bottom-nav-item" data-view="companies">
+          <span class="bottom-nav-icon">🏢</span>
+          <span>Tracks</span>
+        </button>
+        <button class="bottom-nav-item" data-view="practice">
+          <span class="bottom-nav-icon">⚡</span>
+          <span>Practice</span>
+        </button>
+        <button class="bottom-nav-item" data-view="roadmap">
+          <span class="bottom-nav-icon">🗺️</span>
+          <span>Roadmap</span>
+        </button>
+        <button class="bottom-nav-item" data-view="hr">
+          <span class="bottom-nav-icon">💬</span>
+          <span>HR Guide</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
