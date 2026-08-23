@@ -27,7 +27,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.error('Failed to parse saved user', e);
       }
     }
-    return initialStudentProfile;
+    return null;
   });
 
   useEffect(() => {
