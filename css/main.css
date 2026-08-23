@@ -1,0 +1,127 @@
+/* ================================================
+   ApexHire AI — Premium Design System
+   Clean Light Theme · Indigo + Emerald Palette
+   ================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+:root {
+  /* ── Surfaces ── */
+  --surface-0:    #ffffff;
+  --surface-1:    #f8f9ff;
+  --surface-2:    #f1f3fb;
+  --surface-3:    #e8eaf6;
+
+  /* ── Brand ── */
+  --indigo:       #4f46e5;
+  --indigo-dark:  #3730a3;
+  --indigo-light: #ede9fe;
+  --violet:       #7c3aed;
+  --emerald:      #059669;
+  --emerald-light:#d1fae5;
+  --sky:          #0284c7;
+  --sky-light:    #e0f2fe;
+  --amber:        #d97706;
+  --amber-light:  #fef3c7;
+  --rose:         #e11d48;
+  --rose-light:   #ffe4e6;
+
+  /* ── Gradients ── */
+  --grad-brand:   linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  --grad-emerald: linear-gradient(135deg, #059669 0%, #0d9488 100%);
+  --grad-sky:     linear-gradient(135deg, #0284c7 0%, #4f46e5 100%);
+  --grad-hero:    linear-gradient(135deg, #ede9fe 0%, #e0f2fe 100%);
+
+  /* ── Text ── */
+  --text-primary:   #0f172a;
+  --text-secondary: #475569;
+  --text-tertiary:  #94a3b8;
+  --text-on-brand:  #ffffff;
+
+  /* ── Borders ── */
+  --border:         rgba(79, 70, 229, 0.10);
+  --border-strong:  rgba(79, 70, 229, 0.22);
+  --border-subtle:  #f1f5f9;
+
+  /* ── Shadows ── */
+  --shadow-xs:  0 1px 2px rgba(15, 23, 42, 0.05);
+  --shadow-sm:  0 1px 4px rgba(79, 70, 229, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md:  0 4px 16px rgba(79, 70, 229, 0.10), 0 2px 6px rgba(15, 23, 42, 0.05);
+  --shadow-lg:  0 8px 30px rgba(79, 70, 229, 0.12), 0 4px 12px rgba(15, 23, 42, 0.06);
+  --shadow-glow:0 0 0 3px rgba(79, 70, 229, 0.15);
+
+  /* ── Radii ── */
+  --r-xs: 6px;
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+  --r-full: 9999px;
+
+  /* ── Motion ── */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --t-fast: 0.15s;
+  --t-base: 0.22s;
+  --t-slow: 0.35s;
+
+  /* ── Type ── */
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--surface-1); }
+::-webkit-scrollbar-thumb { background: #c7d2fe; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--indigo); }
+
+/* ── Type Scale ── */
+h1 { font-size: clamp(1.6rem, 3vw, 2.1rem); font-weight: 800; letter-spacing: -0.025em; }
+h2 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+h3 { font-size: 1.15rem; font-weight: 700; }
+h4 { font-size: 0.95rem; font-weight: 600; }
+p  { color: var(--text-secondary); }
+
+a { color: var(--indigo); text-decoration: none; }
+a:hover { color: var(--indigo-dark); }
+
+/* ── Ambient Background Orbs ── */
+.bg-canvas {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0; overflow: hidden;
+}
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(72px); opacity: 0.55;
+  animation: drift 20s ease-in-out infinite alternate;
+}
+.orb-1 { width: 480px; height: 480px; top: -80px; left: -60px;
+  background: radial-gradient(circle, #c7d2fe, transparent 70%);
+  animation-duration: 18s; }
+.orb-2 { width: 520px; height: 520px; bottom: -80px; right: -80px;
+  background: radial-gradient(circle, #a5f3fc, transparent 70%);
+  animation-duration: 24s; animation-direction: alternate-reverse; }
+.orb-3 { width: 380px; height: 380px; top: 45%; left: 50%;
+  background: radial-gradient(circle, #ddd6fe, transparent 70%);
+  animation-duration: 16s; }
+
+@keyframes drift {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(30px, -50px) scale(1.06); }
+  100% { transform: translate(-25px, 30px) scale(0.96); }
+}
